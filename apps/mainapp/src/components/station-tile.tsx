@@ -19,17 +19,12 @@ import type { RadioTile } from "@/lib/somafm"
 interface StationTileProps {
   tile: RadioTile
   index: number
-  /** Плитка, из которой обложка «улетела» на экран плеера — её не прячем. */
   keepVisible: boolean
   onPlay: (tile: RadioTile) => void
   onEdit: (tile: RadioTile) => void
   onDelete: (tile: RadioTile) => void
 }
 
-/**
- * Клик/клавиша пришли из меню настроек (триггер или пункты — они в портале,
- * и React «пузырит» их по дереву компонентов до плитки).
- */
 function isMenuInteraction(target: EventTarget | null) {
   return (
     target instanceof Element &&
@@ -39,7 +34,6 @@ function isMenuInteraction(target: EventTarget | null) {
   )
 }
 
-/** Квадратная плитка: обложка + меню настроек (edit/delete). Вся плитка — play. */
 export function StationTile({
   tile,
   index,
@@ -55,7 +49,6 @@ export function StationTile({
       aria-label={`Play: ${tile.title}`}
       title={tile.title}
       onClick={(e) => {
-        // Клики по меню настроек не должны запускать воспроизведение.
         if (isMenuInteraction(e.target)) return
         onPlay(tile)
       }}

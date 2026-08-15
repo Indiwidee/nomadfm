@@ -4,7 +4,6 @@ export interface Playlist {
   quality: string
 }
 
-/** Плитка радио: обложка + прямой URL потока. */
 export interface RadioTile {
   id: string
   title: string
@@ -38,7 +37,6 @@ export async function fetchChannels(): Promise<Channel[]> {
   return data.channels
 }
 
-/** Выбираем плейлист в максимально совместимом формате (mp3 > aac > aacp). */
 export function pickPlaylist(channel: Channel): Playlist {
   const rank: Record<string, number> = { mp3: 0, aac: 1, aacp: 2 }
   return (
@@ -48,10 +46,6 @@ export function pickPlaylist(channel: Channel): Playlist {
   )
 }
 
-/**
- * Загружает .pls и извлекает прямые URL потоков.
- * Обычно их несколько — это fallback-серверы одной и той же станции.
- */
 export async function resolveStreams(plsUrl: string): Promise<string[]> {
   const res = await fetch(plsUrl)
   if (!res.ok) return []
@@ -70,7 +64,6 @@ export function formatListeners(count: string): string {
   return new Intl.NumberFormat("ru-RU").format(num)
 }
 
-/** Стартовые станции, из которых собираются первые 6 плиток. */
 export const DEFAULT_TILE_IDS = [
   "synphaera",
   "groovesalad",
@@ -80,10 +73,6 @@ export const DEFAULT_TILE_IDS = [
   "indiepop",
 ]
 
-/**
- * Собирает стартовые плитки из channels.json: для каждой станции
- * резолвит .pls и берёт прямой URL потока.
- */
 export async function fetchDefaultTiles(): Promise<RadioTile[]> {
   const channels = await fetchChannels()
   const byId = new Map(channels.map((c) => [c.id, c]))

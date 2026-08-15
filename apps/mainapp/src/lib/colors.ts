@@ -1,7 +1,3 @@
-/**
- * Конвертация oklch() в hex. Нужна, чтобы передавать цвета темы
- * (--primary задан в oklch) в GradientWaves, который принимает hex.
- */
 export function oklchToHex(oklch: string): string {
   const match = /oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)/.exec(oklch)
   if (!match) return "#000000"
@@ -11,7 +7,6 @@ export function oklchToHex(oklch: string): string {
   const a = C * Math.cos(H)
   const b = C * Math.sin(H)
 
-  // OKLab → линейный sRGB (обратная матрица Оттоссона)
   const l_ = L + 0.3963377774 * a + 0.2158037573 * b
   const m_ = L - 0.1055613458 * a - 0.0638541728 * b
   const s_ = L - 0.0894841775 * a - 1.291485548 * b
@@ -31,11 +26,6 @@ export function oklchToHex(oklch: string): string {
   return `#${byte(r)}${byte(g)}${byte(bl)}`
 }
 
-/**
- * Два доминирующих цвета обложки — для фона, когда радио играет.
- * Рисуем картинку в маленький canvas, квантуем пиксели и берём самые
- * частые цвета (почти чёрные/белые/серые пропускаем).
- */
 export async function getDominantColors(
   url: string,
 ): Promise<[string, string]> {
@@ -65,7 +55,6 @@ export async function getDominantColors(
       const b = data[i + 2]
       const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b
       const sat = Math.max(r, g, b) - Math.min(r, g, b)
-      // Почти чёрные/белые/серые сразу отбрасываем.
       if (luma < 40 || luma > 215 || sat < 20) continue
       const key = ((r >> 4) << 8) | ((g >> 4) << 4) | (b >> 4)
       const entry = buckets.get(key)
@@ -92,8 +81,6 @@ export async function getDominantColors(
       return `#${byte(entry.r)}${byte(entry.g)}${byte(entry.b)}`
     }
 
-    // После усреднения цвет может «сползти» к белому/чёрному —
-    // ещё раз отсеиваем такие кандидаты.
     const isUsable = (hex: string) => {
       const r = parseInt(hex.slice(1, 3), 16)
       const g = parseInt(hex.slice(3, 5), 16)
@@ -105,7 +92,6 @@ export async function getDominantColors(
     if (pool.length === 0) return fallback
 
     const c1 = pool[0]
-    // Второй цвет: самый частый из достаточно отличных от первого.
     let c2 = pool[1] ?? c1
     for (const candidate of pool.slice(1)) {
       if (colorDistance(c1, candidate) > 60) {

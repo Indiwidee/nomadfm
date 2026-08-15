@@ -22,7 +22,6 @@ const TILE_COUNT = 6
 
 const SCREEN_FADE = { duration: 0.18, ease: "easeInOut" } as const
 
-/** Акцентный цвет темы в hex (тёмная тема принудительно включена). */
 const PRIMARY_HEX = oklchToHex(
   getComputedStyle(document.documentElement).getPropertyValue("--primary"),
 )
@@ -40,9 +39,7 @@ export default function App() {
     retry,
   } = useTiles()
   const [editingTile, setEditingTile] = useState<RadioTile | null>(null)
-  /** Какая плитка «улетела» на экран плеера — для реверса анимации. */
   const [lastPlayedId, setLastPlayedId] = useState<string | null>(null)
-  /** Доминирующие цвета обложки играющей станции. */
   const [dominantColors, setDominantColors] = useState<{
     id: string
     colors: [string, string]
@@ -52,7 +49,6 @@ export default function App() {
 
   const playerCurrent = player.current
 
-  // Доминирующие цвета обложки — для фоновых волн при воспроизведении.
   useEffect(() => {
     if (!playerCurrent) return
     let cancelled = false
@@ -80,7 +76,6 @@ export default function App() {
     setScreen("player")
   }
 
-  /** Плей/пауза: пауза закрывает плеер, спиннер во время загрузки — тоже. */
   const handleToggle = () => {
     if (player.connecting) {
       player.stop()
@@ -92,7 +87,7 @@ export default function App() {
       setScreen("home")
       return
     }
-    player.toggle() // возобновление — остаёмся на экране
+    player.toggle() 
   }
 
   const handleSaveTile = (updated: RadioTile) => {
@@ -106,8 +101,8 @@ export default function App() {
 
   return (
     <div className="relative min-h-dvh">
-      {/* Волны: на телефоне — полоса снизу (у портрета волна обрезается), */}
-      {/* на десктопе — весь экран. */}
+      {}
+      {}
       <div
         className="fixed inset-0 -z-10 max-sm:inset-x-0 max-sm:top-auto max-sm:bottom-0 max-sm:h-[55dvh]"
         aria-hidden
@@ -173,17 +168,17 @@ export default function App() {
             animate={{ opacity: 1, transition: { duration: 0.25 } }}
             exit={{ opacity: 0, transition: SCREEN_FADE }}
           >
-            {/* Логотип (мобильный) */}
+            {}
             <img
-              src="/nomad-wide.svg"
+              src={`${import.meta.env.BASE_URL}nomad-wide.svg`}
               alt="NomadFM"
               className="absolute top-4 left-4 h-12 w-auto sm:hidden"
             />
 
-            {/* Сайдбар с лого и вкладками (десктоп) */}
+            {}
             <nav className="absolute top-4 left-4 hidden flex-col items-start gap-3 sm:flex">
               <img
-                src="/nomad-wide.svg"
+                src={`${import.meta.env.BASE_URL}nomad-wide.svg`}
                 alt="NomadFM"
                 className="h-12 w-auto"
               />
@@ -298,7 +293,7 @@ export default function App() {
               </AnimatePresence>
             </main>
 
-            {/* Bottom navigation (мобильный) */}
+            {}
             <nav className="fixed inset-x-0 bottom-4 z-20 flex justify-center px-4 sm:hidden">
               <div className="flex gap-1 rounded-full bg-background/85 p-1 shadow-lg ring-1 ring-foreground/10 backdrop-blur">
                 <Button

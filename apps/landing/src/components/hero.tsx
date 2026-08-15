@@ -3,8 +3,7 @@ import GradientWaves from "@/components/GradientWaves"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowDown01Icon } from "@hugeicons/core-free-icons"
 
-/** Куда ведёт CTA «Start listening» — dev-сервер mainapp по умолчанию. */
-const APP_URL = import.meta.env.VITE_APP_URL ?? "http://localhost:5173"
+import { APP_URL } from "@/lib/app-url"
 
 const stats = [
   { value: "100+", label: "curated stations" },
@@ -22,7 +21,7 @@ export function Hero() {
       id="top"
       className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden px-4 pt-32 pb-24 text-center sm:px-6"
     >
-      {/* Волны — нижняя половина экрана, как в самом приложении. */}
+      {}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[68dvh]" aria-hidden>
         <GradientWaves
           horizonColor="#006045"
@@ -46,7 +45,7 @@ export function Hero() {
           grain
           grainIntensity={0.05}
         />
-        {/* Плавный переход волн в следующий блок. */}
+        {}
         <div className="absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-background to-transparent" />
       </div>
 

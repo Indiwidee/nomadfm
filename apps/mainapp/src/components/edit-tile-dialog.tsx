@@ -21,7 +21,6 @@ interface EditTileDialogProps {
   onClose: () => void
 }
 
-/** Форма редактирования плитки: название, обложка и URL потока. */
 export function EditTileDialog({ tile, onSave, onClose }: EditTileDialogProps) {
   const [title, setTitle] = useState(tile.title)
   const [cover, setCover] = useState(tile.cover)

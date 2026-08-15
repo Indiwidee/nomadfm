@@ -1,6 +1,5 @@
 import type { RadioTile } from "@/lib/somafm"
 
-/** Станция из Radio Browser API (нужные поля). */
 export interface RbStation {
   stationuuid: string
   name: string
@@ -23,7 +22,6 @@ async function rbFetch(path: string): Promise<unknown> {
   return res.json()
 }
 
-/** Поиск станций по названию и/или категории (тегу). */
 export async function searchStations(params: {
   name?: string
   tag?: string
@@ -39,7 +37,6 @@ export async function searchStations(params: {
   return data as RbStation[]
 }
 
-/** Популярные категории (теги) по числу станций. */
 export async function fetchPopularTags(): Promise<string[]> {
   const data = (await rbFetch(
     "/json/tags?order=stationcount&reverse=true&limit=24&hidebroken=true",
@@ -47,7 +44,6 @@ export async function fetchPopularTags(): Promise<string[]> {
   return data.map((t) => t.name).filter((n) => n && n.length < 24)
 }
 
-/** Станция Radio Browser → плитка приложения. */
 export function rbStationToTile(station: RbStation): RadioTile {
   return {
     id: `rb-${station.stationuuid}`,

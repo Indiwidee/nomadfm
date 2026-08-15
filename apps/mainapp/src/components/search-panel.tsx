@@ -26,7 +26,6 @@ interface SearchPanelProps {
   onAdd: (tile: RadioTile) => void
 }
 
-/** Поиск радиостанций через Radio Browser API: по названию и категориям. */
 export function SearchPanel({
   favouriteIds,
   onPlay,
@@ -39,7 +38,6 @@ export function SearchPanel({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Популярные категории — подгружаем один раз.
   useEffect(() => {
     let cancelled = false
     void fetchPopularTags()
@@ -52,7 +50,6 @@ export function SearchPanel({
     }
   }, [])
 
-  // Поиск с дебаунсом: по названию и/или выбранной категории.
   useEffect(() => {
     const q = query.trim()
     if (!q && !category) return

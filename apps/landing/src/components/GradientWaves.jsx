@@ -153,13 +153,11 @@ const GradientWaves = ({
 }) => {
   const containerRef = useRef(null);
   const enableMouseRef = useRef(mouseInteraction);
-  /** Общее состояние для обоих эффектов: скорость и видимость. */
   const stateRef = useRef({
     speed,
     isVisible: true,
     isPageVisible: !document.hidden
   });
-  /** Даёт эффекту пропсов «разбудить» цикл рендера. */
   const wakeRef = useRef(() => {});
 
   useEffect(() => {
@@ -171,8 +169,6 @@ const GradientWaves = ({
       alpha: true,
       premultipliedAlpha: true,
       antialias: false,
-      // Половина разрешения: шейдер с реймарчингом тяжёлый, а это фон —
-      // лёгкая нерезкость незаметна, зато пикселей в 4 раза меньше.
       dpr: Math.min(window.devicePixelRatio || 1, 2) * 0.5
     });
 
@@ -260,8 +256,6 @@ const GradientWaves = ({
       program.uniforms.uMouse.value[0] = currentMouse[0];
       program.uniforms.uMouse.value[1] = currentMouse[1];
       renderer.render({ scene: mesh });
-      // При speed=0 волны статичны: рисуем кадр и останавливаем цикл,
-      // чтобы не грузить GPU вхолостую.
       if (stateRef.current.speed <= 0) {
         raf = 0;
         return;
@@ -363,7 +357,6 @@ const GradientWaves = ({
     cc[0] = cr[0];
     cc[1] = cr[1];
     cc[2] = cr[2];
-    // Если анимация включена — запускаем цикл, иначе остаётся статичный кадр.
     wakeRef.current?.();
   }, [
     horizonColor,

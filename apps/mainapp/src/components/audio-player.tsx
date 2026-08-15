@@ -10,11 +10,6 @@ interface AudioPlayerProps {
   onError: () => void
 }
 
-/**
- * Оборачивает <audio>, храня ref внутри себя, чтобы не «протекать»
- * им наружу. Воспроизведение запускается декларативно: смена src
- * перезагружает ресурс, а autoPlay стартует поток.
- */
 export function AudioPlayer({
   src,
   volume,

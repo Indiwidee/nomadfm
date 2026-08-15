@@ -18,14 +18,10 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
       parserOptions: {
-        // В монорепо несколько tsconfig.json — фиксируем корень явно,
-        // иначе typescript-eslint не может вывести tsconfigRootDir.
         tsconfigRootDir: import.meta.dirname,
       },
     },
   },
-  // Сгенерированные shadcn-компоненты экспортируют и компоненты, и
-  // вспомогательные константы (cva-варианты) — fast refresh не применяется.
   {
     files: ['src/components/ui/**/*.{ts,tsx}'],
     rules: {

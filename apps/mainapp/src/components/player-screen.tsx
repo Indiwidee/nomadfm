@@ -31,7 +31,6 @@ interface PlayerScreenProps {
   onVolumeChange: (value: number) => void
 }
 
-/** Минималистичный экран воспроизведения: обложка, play/pause и громкость. */
 export function PlayerScreen({
   tile,
   playing,

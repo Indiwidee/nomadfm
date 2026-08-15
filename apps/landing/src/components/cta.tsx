@@ -2,8 +2,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { PlayIcon } from "@hugeicons/core-free-icons"
 
-/** Куда ведёт финальный CTA — dev-сервер mainapp по умолчанию. */
-const APP_URL = import.meta.env.VITE_APP_URL ?? "http://localhost:5173"
+import { APP_URL } from "@/lib/app-url"
 
 export function Cta() {
   return (

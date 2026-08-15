@@ -4,15 +4,8 @@ import { resolveStreams, type RadioTile } from "@/lib/somafm"
 
 const VOLUME_KEY = "nomadfm:volume"
 
-/**
- * Логика радио: выбор станции, резолв .pls, fallback между серверами
- * потока, громкость и Media Session. Элемент <audio> живёт в
- * отдельном компоненте (см. AudioPlayer), сюда он попадает через
- * onElement — в виде обычного значения, не ref.
- */
 export function useRadioPlayer() {
   const [audioEl, setAudioEl] = useState<HTMLAudioElement | null>(null)
-  /** Растёт при каждом выборе станции — защита от устаревших ответов fetch. */
   const selectTokenRef = useRef(0)
 
   const [current, setCurrent] = useState<RadioTile | null>(null)
@@ -33,12 +26,10 @@ export function useRadioPlayer() {
       const same = current?.id === tile.id
       const sameStream = same && current?.stream === tile.stream
 
-      // Уже играет этот же поток — ставим на паузу.
       if (sameStream && audioEl && !audioEl.paused) {
         audioEl.pause()
         return
       }
-      // Тот же поток на паузе, он ещё жив — просто возобновляем.
       if (sameStream && src) {
         audioEl?.play().catch(() => setStreamError("Press play again"))
         return
@@ -50,19 +41,16 @@ export function useRadioPlayer() {
       setPlaying(false)
       setStreamError(null)
 
-      // Прямой URL потока; .pls тоже поддерживаем на случай ручного ввода.
       const urls = tile.stream.endsWith(".pls")
         ? await resolveStreams(tile.stream)
         : [tile.stream]
-      if (token !== selectTokenRef.current) return // выбран другой канал
+      if (token !== selectTokenRef.current) return 
       if (urls.length === 0) {
         setConnecting(false)
         setStreamError("Failed to get the stream address")
         return
       }
 
-      // connecting остаётся true до onAudioPlaying — спиннер крутится,
-      // пока идёт подключение к потоку и буферизация.
       setSources(urls)
       setSrcIndex(0)
     },
@@ -78,7 +66,6 @@ export function useRadioPlayer() {
     }
   }, [audioEl, current])
 
-  /** Ошибка воспроизведения — пробуем следующий fallback-сервер потока. */
   const handleError = useCallback(() => {
     const next = srcIndex + 1
     if (next < sources.length) {
@@ -89,9 +76,8 @@ export function useRadioPlayer() {
     }
   }, [srcIndex, sources.length])
 
-  /** Полная остановка: отменяет незавершённый выбор и глушит поток. */
   const stop = useCallback(() => {
-    selectTokenRef.current++ // аннулирует ещё не завершившийся select()
+    selectTokenRef.current++ 
     if (audioEl) {
       audioEl.pause()
       audioEl.removeAttribute("src")
@@ -110,7 +96,6 @@ export function useRadioPlayer() {
     localStorage.setItem(VOLUME_KEY, String(value))
   }, [])
 
-  // Media Session: трек виден в системных медиа-элементах управления.
   useEffect(() => {
     if (!("mediaSession" in navigator) || !current) return
     navigator.mediaSession.metadata = new MediaMetadata({

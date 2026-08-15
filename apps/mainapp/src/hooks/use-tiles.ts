@@ -25,14 +25,10 @@ function writeTilesToStorage(tiles: RadioTile[]) {
   try {
     localStorage.setItem(TILES_KEY, JSON.stringify(tiles))
   } catch {
-    // переполнение хранилища — игнорируем
+    return
   }
 }
 
-/**
- * Плитки радио: сохранённые в localStorage, либо стартовые из channels.json.
- * Все изменения сразу пишутся в localStorage.
- */
 export function useTiles() {
   const [tiles, setTiles] = useState<RadioTile[]>(
     () => readTilesFromStorage() ?? [],
@@ -62,7 +58,6 @@ export function useTiles() {
     }
   }, [ready])
 
-  // Сохраняем плитки при каждом изменении.
   useEffect(() => {
     if (ready) writeTilesToStorage(tiles)
   }, [tiles, ready])

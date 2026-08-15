@@ -14,7 +14,7 @@ export function Preview() {
 
         <div className="mx-auto mt-14 max-w-4xl">
           <img
-            src="/appDesktop.webp"
+            src={`${import.meta.env.BASE_URL}appDesktop.webp`}
             alt="Nomad FM — сетка станций и плеер"
             loading="lazy"
             className="w-full rounded-2xl shadow-2xl shadow-black/50 ring-1 ring-white/10"

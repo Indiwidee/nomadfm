@@ -1,0 +1,74 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      base_path:
+        description: 'Base path of the site (empty or "/" = domain root, "/repo/" = GitHub Pages project page)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build combined site
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: ${{ inputs.base_path }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.20.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: |
+          pnpm --dir apps/mainapp lint
+          pnpm --dir apps/landing lint
+
+      - name: Build landing (site root)
+        run: pnpm --dir apps/landing build
+
+      - name: Build app (site /app)
+        run: pnpm --dir apps/mainapp build
+
+      - name: Combine builds
+        run: |
+          rm -rf dist-combined
+          mkdir -p dist-combined/app
+          cp -r apps/landing/dist/. dist-combined/
+          cp -r apps/mainapp/dist/. dist-combined/app/
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist-combined
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
