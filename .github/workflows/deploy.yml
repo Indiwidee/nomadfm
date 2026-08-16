@@ -8,7 +8,7 @@ on:
       base_path:
         description: 'Base path of the site (empty or "/" = domain root, "/repo/" = GitHub Pages project page)'
         required: false
-        default: ''
+        default: '/nomadfm/'
 
 permissions:
   contents: read
