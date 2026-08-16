@@ -80,12 +80,12 @@ jobs:
         run: flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
       - name: Build flatpak
-        run: flatpak-builder --user --install-deps-from=flathub --force-clean --repo=flatpak-repo build apps/mainapp/flatpak/fm.nomad.app.yml
+        run: flatpak-builder --user --install-deps-from=flathub --force-clean --default-branch="${{ inputs.tag || github.ref_name }}" --repo=flatpak-repo build apps/mainapp/flatpak/fm.nomad.app.yml
 
-      - name: Export and bundle
-        run: |
-          flatpak build-export --user --branch="${{ inputs.tag || github.ref_name }}" flatpak-repo build
-          flatpak build-bundle flatpak-repo "nomadfm-${{ inputs.tag || github.ref_name }}-x86_64.flatpak" fm.nomad.app "${{ inputs.tag || github.ref_name }}"
+      - name: Bundle
+        # flatpak-builder already exported the app to the repo (branch set
+        # via --default-branch); build-bundle just wraps it into a file.
+        run: flatpak build-bundle flatpak-repo "nomadfm-${{ inputs.tag || github.ref_name }}-x86_64.flatpak" fm.nomad.app "${{ inputs.tag || github.ref_name }}"
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
