@@ -34,5 +34,10 @@ modules:
       - install -Dm644 apps/mainapp/src-tauri/icons/128x128@2x.png /app/share/icons/hicolor/256x256/apps/fm.nomad.app.png
       - install -Dm644 apps/mainapp/flatpak/fm.nomad.app.desktop /app/share/applications/fm.nomad.app.desktop
     sources:
+      # `path` is resolved against the manifest dir (apps/mainapp/flatpak).
+      # Since the manifest path is relative, `../..` lands on apps/ (not the
+      # repo root), so we need three levels up. Verified with GLib: ../../..
+      # -> repo root. The build dir then mirrors the repo root, matching the
+      # apps/mainapp/… paths in build-commands above.
       - type: dir
-        path: ../..
+        path: ../../..
