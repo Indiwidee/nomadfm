@@ -23,6 +23,10 @@ modules:
       # Rust toolchain from the SDK extension. PATH is applied to every
       # build command (each build-command runs in its own shell).
       append-path: /usr/lib/sdk/rust-stable/bin
+      # flatpak-builder builds without network by default; cargo needs to
+      # fetch the locked dependencies from crates.io.
+      build-args:
+        - --share=network
     buildsystem: simple
     build-commands:
       # The module build dir mirrors the repo root (dir source), so all
