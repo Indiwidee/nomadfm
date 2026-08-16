@@ -24,7 +24,7 @@ jobs:
     name: Build combined site
     runs-on: ubuntu-latest
     env:
-      BASE_PATH: ${{ inputs.base_path }}
+      BASE_PATH: ${{ inputs.base_path || '/nomadfm/' }}
     steps:
       - uses: actions/checkout@v4
 
