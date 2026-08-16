@@ -25,14 +25,14 @@ modules:
       append-path: /usr/lib/sdk/rust-stable/bin
     buildsystem: simple
     build-commands:
-      # Each build-command runs in its own shell, so the Rust toolchain is
-      # added to PATH via build-options above, not with `export`.
-      - cargo build --locked --release --manifest-path src-tauri/Cargo.toml
-      - install -Dm755 src-tauri/target/release/mainapp /app/bin/mainapp
-      - install -Dm644 src-tauri/icons/32x32.png /app/share/icons/hicolor/32x32/apps/fm.nomad.app.png
-      - install -Dm644 src-tauri/icons/128x128.png /app/share/icons/hicolor/128x128/apps/fm.nomad.app.png
-      - install -Dm644 src-tauri/icons/128x128@2x.png /app/share/icons/hicolor/256x256/apps/fm.nomad.app.png
-      - install -Dm644 flatpak/fm.nomad.app.desktop /app/share/applications/fm.nomad.app.desktop
+      # The module build dir mirrors the repo root (dir source), so all
+      # paths below are repo-relative, e.g. apps/mainapp/src-tauri/…
+      - cargo build --locked --release --manifest-path apps/mainapp/src-tauri/Cargo.toml
+      - install -Dm755 apps/mainapp/src-tauri/target/release/mainapp /app/bin/mainapp
+      - install -Dm644 apps/mainapp/src-tauri/icons/32x32.png /app/share/icons/hicolor/32x32/apps/fm.nomad.app.png
+      - install -Dm644 apps/mainapp/src-tauri/icons/128x128.png /app/share/icons/hicolor/128x128/apps/fm.nomad.app.png
+      - install -Dm644 apps/mainapp/src-tauri/icons/128x128@2x.png /app/share/icons/hicolor/256x256/apps/fm.nomad.app.png
+      - install -Dm644 apps/mainapp/flatpak/fm.nomad.app.desktop /app/share/applications/fm.nomad.app.desktop
     sources:
       - type: dir
         path: ../..
