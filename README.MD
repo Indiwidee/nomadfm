@@ -42,19 +42,20 @@ The monorepo also hosts the **landing page** (`apps/landing`) — a showcase wit
 
 ## 🛠 Tech
 
-A **pnpm workspaces** monorepo: two Vite apps.
+A **pnpm workspaces** monorepo: two Vite apps plus a Tauri desktop shell.
 
 ```
 nomadfm/
 ├─ apps/
-│  ├─ mainapp/                  # radio player (web + desktop shell)
-│  │  ├─ src/
-│  │  │  ├─ components/         # UI (shadcn) + GradientWaves + screens
-│  │  │  ├─ hooks/              # useRadioPlayer, useTiles
-│  │  │  └─ lib/                # SomaFM / Radio Browser APIs, color utils
-│  │  ├─ src-tauri/             # Tauri v2 desktop shell (same React app)
-│  │  └─ flatpak/               # Flatpak manifest used by CI
-│  └─ landing/                  # landing page
+│  ├─ mainapp/                  # radio player (web only)
+│  │  └─ src/
+│  │     ├─ components/         # UI (shadcn) + GradientWaves + screens
+│  │     ├─ hooks/              # useRadioPlayer, useTiles
+│  │     └─ lib/                # SomaFM / Radio Browser APIs, color utils
+│  ├─ landing/                  # landing page
+│  └─ desktop/                  # Tauri v2 shell — a URL loader for the web app
+│     ├─ src-tauri/             # Rust shell (loads the deployed web app URL)
+│     └─ flatpak/               # Flatpak manifest used by CI
 └─ readmeResources/             # images for this README
 ```
 
@@ -90,8 +91,8 @@ pnpm --dir apps/landing dev
 | `pnpm --dir apps/mainapp lint`       | ESLint                                       |
 | `pnpm --dir apps/landing dev`        | dev server for the landing                   |
 | `pnpm --dir apps/landing build`      | production build of the landing              |
-| `pnpm --dir apps/mainapp tauri dev`  | desktop app with HMR (needs Rust)            |
-| `pnpm --dir apps/mainapp tauri build`| desktop bundle (deb/rpm on Linux, msi/nsis on Windows) |
+| `pnpm --dir apps/desktop tauri dev`  | desktop shell in dev (loads the web URL)     |
+| `pnpm --dir apps/desktop tauri build`| desktop bundles (msi/nsis, deb, flatpak via CI) |
 
 ### Environment variables
 
@@ -103,9 +104,11 @@ pnpm --dir apps/landing dev
 
 ## 🖥 Desktop app (Tauri)
 
-The same React app runs as a desktop app via **Tauri v2** (`apps/mainapp/src-tauri`). The web build is untouched: the desktop bundle only switches Vite's `base` to relative paths when `TAURI_ENV_PLATFORM` is set (Tauri CLI does this automatically).
+The desktop app (`apps/desktop`) is a thin **Tauri v2 shell that loads the deployed web app** in a native window — there is no bundled frontend. It points at the GitHub Pages URL (`https://indiwidee.github.io/nomadfm/app/`), overridable at build time via `NOMADFM_WEB_URL`.
 
-Releases are produced by `.github/workflows/release.yml` on tags `v*` (or manually via *Actions → Release desktop apps*): **Windows** installers (`msi` + `nsis`) and **Flatpak** bundles for `x86_64` and `aarch64`, all uploaded to GitHub Releases. Remember to bump `version` in `apps/mainapp/src-tauri/tauri.conf.json` before tagging.
+Because the app is a URL loader and requires internet anyway, this doubles as an **auto-update system**: deploying a new version of the web app instantly updates every installed desktop shell — no new desktop release needed unless the shell itself changes.
+
+Releases are produced by `.github/workflows/release.yml` on tags `v*` (or manually via *Actions → Release desktop apps*): **Windows** installers (`msi` + `nsis`) and **Flatpak** bundles for `x86_64` and `aarch64`, all uploaded to GitHub Releases. Remember to bump `version` in `apps/desktop/src-tauri/tauri.conf.json` before tagging.
 
 ---
 

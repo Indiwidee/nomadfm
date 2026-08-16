@@ -1,0 +1,52 @@
+id: fm.nomad.app
+runtime: org.gnome.Platform
+runtime-version: '50'
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+command: nomadfm
+
+finish-args:
+  # The app is a URL loader: it needs network for the web app, radio
+  # streams and the Radio Browser API.
+  - --share=network
+  - --share=ipc
+  # Window: Wayland with X11 fallback
+  - --socket=wayland
+  - --socket=fallback-x11
+  # GPU for WebGL (GradientWaves background)
+  - --device=dri
+  # Audio (PipeWire/PulseAudio)
+  - --socket=pulseaudio
+  # Notifications / tray
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+  # WebKitGTK accessibility bridge
+  - --talk-name=org.a11y.Bus
+
+modules:
+  - name: nomadfm
+    build-options:
+      # Rust toolchain from the SDK extension. PATH is applied to every
+      # build command (each build-command runs in its own shell).
+      append-path: /usr/lib/sdk/rust-stable/bin
+      # flatpak-builder builds without network by default; cargo needs to
+      # fetch the locked dependencies from crates.io.
+      build-args:
+        - --share=network
+    buildsystem: simple
+    build-commands:
+      # The module build dir mirrors the repo root (dir source), so all
+      # paths below are repo-relative.
+      - cargo build --locked --release --manifest-path apps/desktop/src-tauri/Cargo.toml
+      - install -Dm755 apps/desktop/src-tauri/target/release/nomadfm /app/bin/nomadfm
+      - install -Dm644 apps/desktop/src-tauri/icons/32x32.png /app/share/icons/hicolor/32x32/apps/fm.nomad.app.png
+      - install -Dm644 apps/desktop/src-tauri/icons/128x128.png /app/share/icons/hicolor/128x128/apps/fm.nomad.app.png
+      - install -Dm644 apps/desktop/src-tauri/icons/128x128@2x.png /app/share/icons/hicolor/256x256/apps/fm.nomad.app.png
+      - install -Dm644 apps/desktop/flatpak/fm.nomad.app.desktop /app/share/applications/fm.nomad.app.desktop
+    sources:
+      # `path` is resolved against the manifest dir (apps/desktop/flatpak).
+      # Three levels up land on the repo root (verified with GLib), which is
+      # what the apps/desktop/… paths in build-commands expect.
+      - type: dir
+        path: ../../..

@@ -3,24 +3,9 @@
   "productName": "Nomad FM",
   "version": "0.1.0",
   "identifier": "fm.nomad.app",
-  "build": {
-    "beforeDevCommand": "pnpm dev",
-    "devUrl": "http://localhost:5173",
-    "beforeBuildCommand": "pnpm build",
-    "frontendDist": "../dist"
-  },
+  "build": {},
   "app": {
-    "windows": [
-      {
-        "title": "Nomad FM",
-        "width": 1200,
-        "height": 800,
-        "minWidth": 900,
-        "minHeight": 600,
-        "resizable": true,
-        "center": true
-      }
-    ],
+    "windows": [],
     "security": {
       "csp": null
     }

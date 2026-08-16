@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Nomad FM
 Comment=Your last next music app — radio player without ads or noise
-Exec=mainapp
+Exec=nomadfm
 Icon=fm.nomad.app
 Terminal=false
 Type=Application
