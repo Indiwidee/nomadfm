@@ -105,7 +105,7 @@ pnpm --dir apps/landing dev
 
 The same React app runs as a desktop app via **Tauri v2** (`apps/mainapp/src-tauri`). The web build is untouched: the desktop bundle only switches Vite's `base` to relative paths when `TAURI_ENV_PLATFORM` is set (Tauri CLI does this automatically).
 
-Releases are produced by `.github/workflows/release.yml` on tags `v*` (or manually via *Actions → Release desktop apps*): **Windows** installers (`msi` + `nsis`) and a **Flatpak** bundle, both uploaded to GitHub Releases. Remember to bump `version` in `apps/mainapp/src-tauri/tauri.conf.json` before tagging.
+Releases are produced by `.github/workflows/release.yml` on tags `v*` (or manually via *Actions → Release desktop apps*): **Windows** installers (`msi` + `nsis`) and **Flatpak** bundles for `x86_64` and `aarch64`, all uploaded to GitHub Releases. Remember to bump `version` in `apps/mainapp/src-tauri/tauri.conf.json` before tagging.
 
 ---
 
