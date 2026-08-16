@@ -5,6 +5,7 @@ import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
 
 function buildBase(): string {
+  if (process.env.TAURI_ENV_PLATFORM) return './'
   const raw = process.env.BASE_PATH?.trim() ?? ''
   const basePath = raw === '/' || raw === '' ? '' : raw.replace(/\/+$/, '')
   return `${basePath}/app/`

@@ -47,11 +47,13 @@ A **pnpm workspaces** monorepo: two Vite apps.
 ```
 nomadfm/
 ├─ apps/
-│  ├─ mainapp/                  # radio player
-│  │  └─ src/
-│  │     ├─ components/         # UI (shadcn) + GradientWaves + screens
-│  │     ├─ hooks/              # useRadioPlayer, useTiles
-│  │     └─ lib/                # SomaFM / Radio Browser APIs, color utils
+│  ├─ mainapp/                  # radio player (web + desktop shell)
+│  │  ├─ src/
+│  │  │  ├─ components/         # UI (shadcn) + GradientWaves + screens
+│  │  │  ├─ hooks/              # useRadioPlayer, useTiles
+│  │  │  └─ lib/                # SomaFM / Radio Browser APIs, color utils
+│  │  ├─ src-tauri/             # Tauri v2 desktop shell (same React app)
+│  │  └─ flatpak/               # Flatpak manifest used by CI
 │  └─ landing/                  # landing page
 └─ readmeResources/             # images for this README
 ```
@@ -88,12 +90,22 @@ pnpm --dir apps/landing dev
 | `pnpm --dir apps/mainapp lint`       | ESLint                                       |
 | `pnpm --dir apps/landing dev`        | dev server for the landing                   |
 | `pnpm --dir apps/landing build`      | production build of the landing              |
+| `pnpm --dir apps/mainapp tauri dev`  | desktop app with HMR (needs Rust)            |
+| `pnpm --dir apps/mainapp tauri build`| desktop bundle (deb/rpm on Linux, msi/nsis on Windows) |
 
 ### Environment variables
 
 | Variable          | Where           | Purpose                                                        |
 | ----------------- | --------------- | -------------------------------------------------------------- |
 | `VITE_APP_URL`    | `apps/landing`  | Where the landing CTAs ("Turn it on") point; defaults to `http://localhost:5173` |
+
+---
+
+## 🖥 Desktop app (Tauri)
+
+The same React app runs as a desktop app via **Tauri v2** (`apps/mainapp/src-tauri`). The web build is untouched: the desktop bundle only switches Vite's `base` to relative paths when `TAURI_ENV_PLATFORM` is set (Tauri CLI does this automatically).
+
+Releases are produced by `.github/workflows/release.yml` on tags `v*` (or manually via *Actions → Release desktop apps*): **Windows** installers (`msi` + `nsis`) and a **Flatpak** bundle, both uploaded to GitHub Releases. Remember to bump `version` in `apps/mainapp/src-tauri/tauri.conf.json` before tagging.
 
 ---
 

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Nomad FM
+Comment=Your last next music app — radio player without ads or noise
+Exec=mainapp
+Icon=fm.nomad.app
+Terminal=false
+Type=Application
+Categories=Audio;AudioVideo;Player;
+Keywords=radio;music;streaming;
